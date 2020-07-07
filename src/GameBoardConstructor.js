@@ -6,6 +6,7 @@ export class Game {
         col.fill(0);
         this.board.push(col);
       }
+      this.status = 'pause'
     }
   
     canBeAlive(i, j) {
@@ -31,23 +32,25 @@ export class Game {
     // }
   
     nextMove() {
-      // setInterval(() => {
-      //   // NEXT LOOP WILL MOV HERE AFTER TEST
-      // }, 1000)
-        for (let i = 0; i < this.board.length; i++) {
-            for (let j = 0; j < this.board[i].length; j++) {
+        const matrix = [];
+        for (let arr of this.board) {
+            matrix.push([...arr]);
+        }
+      
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix[i].length; j++) {
                 if (this.canBeAlive(i, j)) {
-                    this.board[i][j] = 1
+                    matrix[i][j] = 1
                 } else {
-                    this.board[i][j] = 0
+                    matrix[i][j] = 0
                 }
             }
         }
-        return this.board;
+        return matrix;
     }
   
-    fill(x, y) {
-        this.board[x][y] = 1
+    toggleSquare(x, y) {
+        this.board[x][y] = this.board[x][y] ? 0 : 1
     }
 
     updateBoard(matrix) {

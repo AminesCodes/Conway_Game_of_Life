@@ -9,12 +9,10 @@ function App() {
   const [ rows, setRows ] = useState(10);
   // eslint-disable-next-line
   const [ columns, setColumns ] = useState(10);
-  // eslint-disable-next-line
-  const [ game, setGame ] = useState([]);
 
   return (
     <div className='container-fluid text-center bg-light m-3'>
-      <Grid rows={rows} columns={columns} game={game} setGame={setGame} />
+      <Grid rows={rows} columns={columns} />
       
     </div>
   );
