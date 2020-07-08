@@ -13,6 +13,8 @@ export default function Grid(props) {
     // eslint-disable-next-line
     const [ boardWidth, setBoardWidth ] = useState(0);
     const [ update, setUpdate ] = useState(false);
+
+    const [ started, setStarted ] = useState(false);
     
     const rowDiv = useRef();
 
@@ -36,7 +38,7 @@ export default function Grid(props) {
     }, [rowDiv.current, update]);
 
     
-    useEffect(() => {
+    const randomFill = () => {
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < columns; j++) {
                 const random = Math.random();
@@ -46,26 +48,43 @@ export default function Grid(props) {
             }
         }
         setMatrix(gameClass.board);
-        // eslint-disable-next-line
-    }, [rows, columns, update])
+        setUpdate(!update);
+    }
+
+    useEffect(() => {
+        setMatrix(gameClass.board);
+    }, [gameClass.board, update])
 
     const squareFace = boardWidth / (matrix.length || 1);
 
     const handleClickSquare = (i, j) => {
-        // const copy = [];
-        // for (let arr of matrix) {
-        //     copy.push([...arr]);
-        // }
-        // copy[i][j] = copy[i][j] ? 0 : 1;
-        // gameClass.updateBoard(copy);
-        // console.log(copy)
         gameClass.toggleSquare(i, j);
         setUpdate(!update);
     }
 
+    const nextTic = () => {
+        gameClass.nextMove();
+        setUpdate(!update);
+    }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (started) {
+                nextTic()
+            }
+        }, 500);
+        
+        return () => clearInterval(interval);
+    })
+
+
 
     return (
         <div>
+            <button className='btn btn-success' onClick={() => setStarted(true)}>Start</button>
+            <button className='btn btn-info' onClick={nextTic}>Next</button>
+            <button className='btn btn-danger' onClick={() => setStarted(false)}>Stop</button>
+            <button className='btn btn-dark' onClick={randomFill}>Random</button>
             <div ref={rowDiv} className=''></div>
             {
                 matrix.map((row, i) => <div key={`row${i}`} className='row' >

@@ -6,9 +6,9 @@ import Grid from './components/Grid'
 
 function App() {
   // eslint-disable-next-line
-  const [ rows, setRows ] = useState(10);
+  const [ rows, setRows ] = useState(30);
   // eslint-disable-next-line
-  const [ columns, setColumns ] = useState(10);
+  const [ columns, setColumns ] = useState(30);
 
   return (
     <div className='container-fluid text-center bg-light m-3'>
