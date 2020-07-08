@@ -4,7 +4,7 @@ import { Game } from '../GameBoardConstructor'
 
 export default function Grid(props) {
     // eslint-disable-next-line
-    const { rows, columns } = props;
+    const { rows, columns, setRatio } = props;
     
     // eslint-disable-next-line
     const [ gameClass, setGameClass ] = useState(new Game(rows, columns));
@@ -15,6 +15,10 @@ export default function Grid(props) {
     const [ update, setUpdate ] = useState(false);
 
     const [ started, setStarted ] = useState(false);
+
+    useEffect(() => {
+        setGameClass(new Game(rows, columns));
+    }, [rows, columns])
     
     const rowDiv = useRef();
 
@@ -32,7 +36,13 @@ export default function Grid(props) {
 
     useLayoutEffect(() => {
         const dim = rowDiv.current.getBoundingClientRect()
-        setBoardWidth(dim.width);
+        const height = dim.height;
+        const width = dim.width;
+        const ratio = Math.floor(width / height);
+
+        setRatio(ratio);
+        console.log(Math.min(dim.width, dim.height))
+        setBoardWidth(Math.min(dim.width, dim.height));
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rowDiv.current, update]);
@@ -80,22 +90,25 @@ export default function Grid(props) {
 
 
     return (
-        <div>
+        <div className='game'>
             <button className='btn btn-success' onClick={() => setStarted(true)}>Start</button>
             <button className='btn btn-info' onClick={nextTic}>Next</button>
             <button className='btn btn-danger' onClick={() => setStarted(false)}>Stop</button>
             <button className='btn btn-dark' onClick={randomFill}>Random</button>
-            <div ref={rowDiv} className=''></div>
-            {
-                matrix.map((row, i) => <div key={`row${i}`} className='row' >
-                        {
-                            row.map((square, j) => 
-                                <div key={`col${j}`} onClick={() => handleClickSquare(i, j)} className='d-flex justify-content-center flex-wrap'>
-                                    <span className={square ? 'filled' : 'blank'} style={{height: `${squareFace}px`, width: `${squareFace}px`}}></span>
-                                </div>)
-                        }
-                    </div>)
-            }
+            <div ref={rowDiv} className='gridContainer m-0' style={{height: '90vh', width: '95vw'}}>
+                {
+                    matrix.map((row, i) => <div key={`row${i}`} className='row d-flex justify-content-center flex-nowrap' >
+                    {/* matrix.map((row, i) => <div key={`row${i}`} className='row' > */}
+                            {
+                                row.map((square, j) => 
+                                    // <div key={`col${j}`} onClick={() => handleClickSquare(i, j)} className='d-flex justify-content-center flex-nowrap'>
+                                    <div key={`col${j}`} onClick={() => handleClickSquare(i, j)} className={square ? 'filled' : 'blank'} style={{height: `${squareFace}px`, width: `${squareFace}px`}}>
+                                        {/* <span className={square ? 'filled' : 'blank'} style={{height: `${squareFace}px`, width: `${squareFace}px`}}></span> */}
+                                    </div>)
+                            }
+                        </div>)
+                }
+            </div>
         </div>
     )
 }
